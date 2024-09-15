@@ -47,3 +47,20 @@ fun main() {
     expManager.displayTotalByCategory(totalByCategory)
 }
 
+/*
+    Вывод программы:
+    -----------------------------------------------------------------------
+
+    Все расходы:
+    amount: 550.0, category: food, date: 2024-09-14
+    amount: 840.0, category: transport, date: 2024-09-14
+    amount: 399.0, category: food, date: 2024-09-14
+    amount: 450.0, category: food, date: 2024-09-14
+    amount: 400.0, category: sport, date: 2024-09-14
+    amount: 625.0, category: transport, date: 2024-09-14
+
+    Сумма всех расходов по каждой категории:
+    food: 1399.0
+    transport: 1465.0
+    sport: 400.0
+*/
