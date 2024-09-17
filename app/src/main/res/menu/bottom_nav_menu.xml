@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Авторизация"
+        android:icon="@drawable/baseline_person_24"
+        android:id="@+id/auth_menu"/>
+    <item android:title="Оплата"
+        android:icon="@drawable/baseline_monetization_on_24"
+        android:id="@+id/pay_menu"/>
+    <item android:title="Настройки"
+        android:icon="@drawable/baseline_build_24"
+        android:id="@+id/settings_menu"/>
+</menu>
