@@ -8,25 +8,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.platon.kotlinmirealabs.R
 import com.platon.kotlinmirealabs.adapters.NewsAdapter
 import com.platon.kotlinmirealabs.databinding.FragmentFavouritesBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FavouritesFragment: Fragment(R.layout.fragment_favourites) {
+class FavouritesFragment : Fragment(R.layout.fragment_favourites) {
 
     private lateinit var binding: FragmentFavouritesBinding
     private lateinit var newsAdapter: NewsAdapter
-    private lateinit var newsViewModel: NewsViewModel
+    private val newsViewModel: NewsViewModel by viewModel() // Получаем ViewModel через Koin
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentFavouritesBinding.bind(view)
-
-        newsViewModel = (activity as MainActivity).newsViewModel
         setupFavouritesRecycler()
-
 
         newsViewModel.getFavoriteNews().observe(viewLifecycleOwner, Observer { articles ->
             newsAdapter.differ.submitList(articles)
         })
-
     }
 
     private fun setupFavouritesRecycler() {

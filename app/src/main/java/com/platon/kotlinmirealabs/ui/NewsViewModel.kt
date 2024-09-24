@@ -14,9 +14,11 @@ import com.platon.kotlinmirealabs.util.Resource
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
-import java.util.Locale.IsoCountryCode
 
-class NewsViewModel(app: Application, var newsRepository: NewsRepository): AndroidViewModel(app) {
+class NewsViewModel(
+    app: Application,
+    private val newsRepository: NewsRepository // Инъекция зависимости через Koin
+) : AndroidViewModel(app) {
 
     val headlines: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
     var headlinesPage = 1
@@ -72,9 +74,8 @@ class NewsViewModel(app: Application, var newsRepository: NewsRepository): Andro
             if (internetConnection(this.getApplication()) == true) {
                 val response = newsRepository.getHeadlines(countryCode, headlinesPage)
                 headlines.postValue(handleHeadlinesResponse(response))
-
             }
-        }catch (t: Throwable){
+        } catch (t: Throwable) {
             when (t) {
                 is IOException -> headlines.postValue(Resource.Error("${t.message}"))
                 else -> headlines.postValue(Resource.Error("No signal"))
@@ -82,3 +83,4 @@ class NewsViewModel(app: Application, var newsRepository: NewsRepository): Andro
         }
     }
 }
+

@@ -64,6 +64,8 @@ dependencies {
     implementation (libs.androidx.navigation.ui.ktx)
     implementation (libs.glide)
 
+    implementation ("io.insert-koin:koin-core:4.0.0")
+    implementation ("io.insert-koin:koin-android:4.0.0")
 
 
 }
