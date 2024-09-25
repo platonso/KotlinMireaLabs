@@ -42,7 +42,7 @@ class MainActivityUITest {
     // Проверка загрузки изображения
     @Test
     fun testImageLoading() {
-        val testUrl = "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/21/5f/08/73/caption.jpg?w=1200&h=1200&s=1"
+        val testUrl = "https://i.pinimg.com/originals/c3/35/48/c33548ed5b34b865e26f954b86b3e915.jpg"
         onView(withId(R.id.input)).perform(typeText(testUrl), closeSoftKeyboard())
         onView(withId(R.id.button)).perform(click())
         Thread.sleep(5000)

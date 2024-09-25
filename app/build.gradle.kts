@@ -50,5 +50,22 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     testImplementation (libs.mockito.core)
-    testImplementation("org.hamcrest:hamcrest:2.2")
+
+    testImplementation ("androidx.test:core:1.6.1")
+    testImplementation ("androidx.test.ext:junit:1.2.1")
+    testImplementation ("androidx.test:runner:1.6.2")
+    testImplementation ("androidx.test:rules:1.6.1")
+    testImplementation ("org.mockito:mockito-core:5.2.0")
+    testImplementation ("org.mockito:mockito-inline:4.0.0")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0")
+    testImplementation ("org.robolectric:robolectric:4.13")
+    testImplementation ("androidx.test:core:1.2.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.1")
+
+
+    testImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    testImplementation("androidx.test.ext:junit:1.2.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
+    testImplementation("org.robolectric:robolectric:4.13")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 }

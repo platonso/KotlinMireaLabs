@@ -5,6 +5,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +15,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.platon.kotlinmirealabs.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -22,7 +29,11 @@ import java.net.URL
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    lateinit var input: EditText
+    lateinit var button: Button
+    lateinit var imageView: ImageView
+
+    public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -34,8 +45,12 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        binding.button.setOnClickListener {
-            val imageUrl = binding.input.text.toString()
+        input = findViewById(R.id.input)
+        button= findViewById(R.id.button)
+        imageView = findViewById(R.id.imageView)
+
+        button.setOnClickListener {
+            val imageUrl = input.text.toString()
             if (imageUrl.isNotEmpty()) {
                 downloadAndSaveImage(imageUrl, this)
             } else {
@@ -45,10 +60,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun downloadAndSaveImage(imageUrl: String, context: Context) {
-        lifecycleScope.launch {
-            val bitmap = downloadImage(imageUrl) // Network Thread
+        CoroutineScope(Dispatchers.Main).launch {
+            val bitmapDeferred = downloadImage(imageUrl) // Network Thread
+            val bitmap = bitmapDeferred.await()
             if (bitmap != null) {
-                binding.imageView.setImageBitmap(bitmap)
+                imageView.setImageBitmap(bitmap)
                 launch(Dispatchers.IO) {
                     saveImageToDisk(bitmap, context) // Disk Thread
                 }
@@ -58,8 +74,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    suspend fun downloadImage(imageUrl: String): Bitmap? {
-        return withContext(Dispatchers.IO) {
+    fun downloadImage(imageUrl: String): Deferred<Bitmap?> {
+        return CoroutineScope(Dispatchers.IO).async{
             try {
                 val url = URL(imageUrl)
                 val connection = url.openConnection()
@@ -74,8 +90,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    suspend fun saveImageToDisk(bitmap: Bitmap, context: Context) {
-        withContext(Dispatchers.IO) {
+    suspend fun saveImageToDisk(bitmap: Bitmap, context: Context): Job {
+        return CoroutineScope(Dispatchers.IO).launch {
             try {
                 val file = File(
                     context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
@@ -97,7 +113,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Новый метод showToast
     fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
