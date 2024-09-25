@@ -49,5 +49,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    //implementation (libs.kotlinx.coroutinesandroid)
+    testImplementation (libs.mockito.core)
+    testImplementation("org.hamcrest:hamcrest:2.2")
 }

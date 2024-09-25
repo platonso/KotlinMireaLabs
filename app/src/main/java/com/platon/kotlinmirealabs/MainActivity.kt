@@ -20,45 +20,45 @@ import java.io.FileOutputStream
 import java.net.URL
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         binding.button.setOnClickListener {
             val imageUrl = binding.input.text.toString()
             if (imageUrl.isNotEmpty()) {
                 downloadAndSaveImage(imageUrl, this)
             } else {
-                Toast.makeText(this, "Введите ссылку на изображение",
-                    Toast.LENGTH_SHORT).show()
+                showToast("Введите ссылку на изображение")
             }
         }
     }
 
-    private fun downloadAndSaveImage(imageUrl: String, context: Context) {
+    fun downloadAndSaveImage(imageUrl: String, context: Context) {
         lifecycleScope.launch {
             val bitmap = downloadImage(imageUrl) // Network Thread
             if (bitmap != null) {
                 binding.imageView.setImageBitmap(bitmap)
-                // Запускаем сохранение в отдельной корутине
                 launch(Dispatchers.IO) {
                     saveImageToDisk(bitmap, context) // Disk Thread
                 }
             } else {
-                Toast.makeText(context, "Ошибка загрузки изображения", Toast.LENGTH_SHORT).show()
+                showToast("Ошибка загрузки изображения")
             }
         }
     }
 
-
-    private suspend fun downloadImage(imageUrl: String): Bitmap? {
+    suspend fun downloadImage(imageUrl: String): Bitmap? {
         return withContext(Dispatchers.IO) {
             try {
                 val url = URL(imageUrl)
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun saveImageToDisk(bitmap: Bitmap, context: Context) {
+    suspend fun saveImageToDisk(bitmap: Bitmap, context: Context) {
         withContext(Dispatchers.IO) {
             try {
                 val file = File(
@@ -86,14 +86,19 @@ class MainActivity : AppCompatActivity() {
                     outputStream.flush()
                 }
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Изображение сохранено", Toast.LENGTH_SHORT).show()
+                    showToast("Изображение сохранено")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Ошибка сохранения изображения", Toast.LENGTH_SHORT).show()
+                    showToast("Ошибка сохранения изображения")
                 }
             }
         }
+    }
+
+    // Новый метод showToast
+    fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
